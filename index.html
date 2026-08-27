@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Our Summer Together</title>
+    <meta
+      name="description"
+      content="A warm, editorial-style summer photo album journal spanning June through August 2026."
+    >
+    <meta name="theme-color" content="#e8dcc9">
+    <meta property="og:title" content="Our Summer Together">
+    <meta
+      property="og:description"
+      content="A responsive static photo album journal built with HTML, CSS, and vanilla JavaScript."
+    >
+    <meta property="og:type" content="website">
+    <meta property="og:image" content="https://res.cloudinary.com/jrlaeufd/image/upload/v1787865785/IMG_6633.jpg">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <a class="skip-link" href="#entries-start" data-skip-link>Skip to album entries</a>
+
+    <noscript>
+      <div class="noscript-message">
+        This album uses JavaScript to render the journal entries and navigation.
+        Please enable JavaScript to explore the album.
+      </div>
+    </noscript>
+
+    <header class="site-header" data-header>
+      <nav class="header-shell" aria-label="Album navigation" data-header-navigation>
+        <div class="language-toggle" role="group" aria-label="Choose language" data-language-toggle>
+          <button class="language-chip is-active" type="button" data-language-button="en" aria-pressed="true">EN</button>
+          <button class="language-chip" type="button" data-language-button="bn" aria-pressed="false">বাংলা</button>
+        </div>
+        <div class="month-dock" aria-label="Jump to month">
+          <button class="month-chip" type="button" data-month-button="06">Jun</button>
+          <button class="month-chip" type="button" data-month-button="07">Jul</button>
+          <button class="month-chip" type="button" data-month-button="08">Aug</button>
+        </div>
+      </nav>
+    </header>
+
+    <main class="page-shell">
+      <section class="cover-panel" id="cover" aria-labelledby="album-title">
+        <div class="cover-copy">
+          <p class="eyebrow" data-album-eyebrow>Static summer journal</p>
+          <h1 id="album-title" data-album-title>Loading album...</h1>
+          <p class="album-range" data-album-range></p>
+          <p class="album-subtitle" data-album-subtitle></p>
+          <div class="cover-actions">
+            <a class="button-primary" href="#entries-start" data-begin-link>Open first entry</a>
+            <p class="scroll-prompt" data-scroll-prompt>Scroll to begin</p>
+          </div>
+        </div>
+        <div class="cover-collage" data-cover-collage></div>
+      </section>
+
+      <div id="entries-start" tabindex="-1"></div>
+      <section class="entries-shell" aria-label="Photo journal entries" data-entries></section>
+    </main>
+
+    <div class="lightbox" data-lightbox hidden>
+      <div class="lightbox-backdrop" data-lightbox-backdrop></div>
+      <div class="lightbox-dialog" role="dialog" aria-modal="true" aria-label="Enlarged photo">
+        <button class="lightbox-close" type="button" data-lightbox-close aria-label="Close enlarged photo">&times;</button>
+        <img class="lightbox-image" data-lightbox-image alt="">
+        <p class="lightbox-caption" data-lightbox-caption></p>
+      </div>
+    </div>
+
+    <template id="entry-template">
+      <article class="entry-card" data-entry>
+        <div class="entry-copy">
+          <p class="entry-date" data-entry-date></p>
+          <h2 class="entry-title" data-entry-title></h2>
+          <p class="entry-description" data-entry-description></p>
+        </div>
+        <div class="entry-media" data-entry-media></div>
+      </article>
+    </template>
+
+    <script src="data.js?v=3"></script>
+    <script src="app.js?v=2"></script>
+  </body>
+</html>
