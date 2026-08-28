@@ -38,7 +38,7 @@
     activeUtterance: null,
     audioButton: null,
     activeAudio: null,
-    language: getInitialLanguage(),
+    language: "bn",
     entryObserver: null,
   };
 
@@ -54,6 +54,12 @@
     beginLink: document.querySelector("[data-begin-link]"),
     coverCollage: document.querySelector("[data-cover-collage]"),
     entries: document.querySelector("[data-entries]"),
+    galleryButton: document.querySelector("[data-gallery-button]"),
+    galleryTitle: document.querySelector("[data-gallery-title]"),
+    amazonPhotos: document.querySelector("[data-amazon-photos]"),
+    amazonPhotosLink: document.querySelector("[data-amazon-photos-link]"),
+    galleryGrid: document.querySelector("[data-gallery-grid]"),
+    galleryEmpty: document.querySelector("[data-gallery-empty]"),
     monthButtons: Array.prototype.slice.call(
       document.querySelectorAll("[data-month-button]"),
     ),
@@ -83,14 +89,20 @@
 
   renderCover();
   renderEntries();
+  renderGallery();
   bindMonthDock();
+  bindGallery();
   bindLanguageToggle();
   bindGlobalNavigation();
   bindLightbox();
   bindSpeech();
 
+  if ("scrollRestoration" in history) {
+    history.scrollRestoration = "manual";
+  }
+
   window.requestAnimationFrame(function () {
-    handleInitialHash();
+    resetInitialView();
     activateObserver();
     updateActiveStateFromViewport();
   });
@@ -109,6 +121,8 @@
     elements.scrollPrompt.textContent = copy.scrollToBegin;
     elements.entries.setAttribute("aria-label", copy.entriesLabel);
     elements.headerNavigation.setAttribute("aria-label", copy.navigationLabel);
+    elements.galleryButton.setAttribute("aria-label", copy.gallery);
+    elements.galleryButton.title = copy.gallery;
 
     var firstEntry = entries[0];
     elements.beginLink.setAttribute(
@@ -172,6 +186,47 @@
 
       elements.entries.appendChild(fragment);
     });
+  }
+
+  function renderGallery() {
+    var copy = getCopy();
+    var videos = Array.isArray(data.gallery) ? data.gallery : [];
+    var videoIds = videos.map(getYouTubeVideoId).filter(Boolean);
+    var amazonPhotosUrl = typeof data.amazonPhotosUrl === "string"
+      ? data.amazonPhotosUrl.trim()
+      : "";
+
+    elements.galleryTitle.textContent = copy.gallery;
+    elements.amazonPhotos.hidden = !amazonPhotosUrl;
+    if (amazonPhotosUrl) {
+      elements.amazonPhotosLink.href = amazonPhotosUrl;
+    } else {
+      elements.amazonPhotosLink.removeAttribute("href");
+    }
+    elements.galleryGrid.innerHTML = "";
+    elements.galleryEmpty.hidden = videoIds.length > 0;
+    elements.galleryEmpty.textContent = copy.galleryEmpty;
+
+    videoIds.forEach(function (videoId, index) {
+      var card = document.createElement("article");
+      var frame = document.createElement("iframe");
+
+      card.className = "gallery-card";
+      frame.src = "https://www.youtube-nocookie.com/embed/" + videoId + "?playsinline=1&rel=0";
+      frame.title = copy.gallery + " video " + (index + 1);
+      frame.loading = "lazy";
+      frame.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+      frame.allowFullscreen = true;
+      card.appendChild(frame);
+      elements.galleryGrid.appendChild(card);
+    });
+  }
+
+  function getYouTubeVideoId(link) {
+    var value = typeof link === "string" ? link.trim() : "";
+    var match = value.match(/(?:youtube\.com\/(?:shorts\/|watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/i);
+
+    return match ? match[1] : "";
   }
 
   function createSpeechControls(entry) {
@@ -264,6 +319,12 @@
     });
   }
 
+  function bindGallery() {
+    elements.galleryButton.addEventListener("click", function () {
+      navigateToHash("#gallery", true);
+    });
+  }
+
   function bindLanguageToggle() {
     elements.languageButtons.forEach(function (button) {
       button.addEventListener("click", function () {
@@ -275,33 +336,15 @@
 
         state.language = language;
         stopSpeech();
-        saveLanguage(language);
         renderCover();
         renderEntries();
+        renderGallery();
         updateLanguageToggle();
         activateObserver();
       });
     });
 
     updateLanguageToggle();
-  }
-
-  function getInitialLanguage() {
-    try {
-      return window.localStorage.getItem("photo-album-language") === "en"
-        ? "en"
-        : "bn";
-    } catch (error) {
-      return "bn";
-    }
-  }
-
-  function saveLanguage(language) {
-    try {
-      window.localStorage.setItem("photo-album-language", language);
-    } catch (error) {
-      // Language selection remains available when storage is blocked.
-    }
   }
 
   function getCopy() {
@@ -323,6 +366,8 @@
       stopReading: "Stop reading this description",
       audioUnavailable: "Audio unavailable",
       photo: "photo",
+      gallery: "Gallery",
+      galleryEmpty: "Gallery videos are coming soon.",
       months: { "06": "Jun", "07": "Jul", "08": "Aug" },
     };
 
@@ -377,6 +422,9 @@
     elements.monthButtons.forEach(function (button) {
       button.textContent = copy.months[button.dataset.monthButton] || "";
     });
+
+    elements.galleryButton.setAttribute("aria-label", copy.gallery);
+    elements.galleryButton.title = copy.gallery;
   }
 
   function bindGlobalNavigation() {
@@ -523,6 +571,12 @@
 
   function updateSelectionFromHash(hash, fromObserver) {
     var id = hash.replace("#", "");
+
+    if (id === "gallery") {
+      updateSelection(-1, true);
+      return;
+    }
+
     var resolved = entryById.get(id);
 
     if (!resolved) {
@@ -554,24 +608,10 @@
     }
   }
 
-  function handleInitialHash() {
-    if (!location.hash || location.hash === "#cover") {
-      updateSelection(-1);
-      return;
-    }
-
-    var target = getHashTarget(location.hash);
-
-    if (!target) {
-      handleInvalidHash();
-      return;
-    }
-
-    target.scrollIntoView({
-      behavior: "auto",
-      block: "start",
-    });
-    updateSelectionFromHash(location.hash);
+  function resetInitialView() {
+    history.replaceState(null, "", "#cover");
+    window.scrollTo(0, 0);
+    updateSelection(-1, true);
   }
 
   function handleInvalidHash() {
