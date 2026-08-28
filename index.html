@@ -30,6 +30,8 @@
 
     <header class="site-header" data-header>
       <nav class="header-shell" aria-label="Album navigation" data-header-navigation>
+        <button class="gallery-chip" type="button" data-gallery-button aria-label="Gallery" title="Gallery">📷</button>
+        <span class="header-divider" aria-hidden="true"></span>
         <div class="language-toggle" role="group" aria-label="Choose language" data-language-toggle>
           <button class="language-chip is-active" type="button" data-language-button="en" aria-pressed="true">EN</button>
           <button class="language-chip" type="button" data-language-button="bn" aria-pressed="false">বাংলা</button>
@@ -59,6 +61,14 @@
 
       <div id="entries-start" tabindex="-1"></div>
       <section class="entries-shell" aria-label="Photo journal entries" data-entries></section>
+      <section class="gallery-section" id="gallery" aria-labelledby="gallery-title" data-gallery-section>
+        <h2 class="gallery-title" id="gallery-title" data-gallery-title>Gallery</h2>
+        <div class="gallery-amazon" data-amazon-photos hidden>
+          <a class="gallery-amazon-link" data-amazon-photos-link>See All Photos</a>
+        </div>
+        <div class="gallery-grid" data-gallery-grid></div>
+        <p class="gallery-empty" data-gallery-empty hidden></p>
+      </section>
     </main>
 
     <div class="lightbox" data-lightbox hidden>
@@ -81,7 +91,7 @@
       </article>
     </template>
 
-    <script src="data.js?v=6"></script>
-    <script src="app.js?v=5"></script>
+    <script src="data.js?v=7"></script>
+    <script src="app.js?v=6"></script>
   </body>
 </html>
