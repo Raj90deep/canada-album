@@ -501,7 +501,7 @@ a {
 .lightbox-dialog {
   position: relative;
   z-index: 1;
-  width: min(92vw, 980px);
+  width: min(92vw, 312px);
   max-height: 92vh;
   display: grid;
   gap: 0.9rem;
@@ -528,8 +528,9 @@ a {
 }
 
 .lightbox-image {
-  width: 100%;
-  max-height: calc(92vh - 5.5rem);
+  width: min(280px, 100%);
+  height: min(370px, calc(92vh - 5.5rem));
+  margin-inline: auto;
   border-radius: calc(var(--radius-md) + 2px);
   object-fit: contain;
   background: rgba(239, 228, 212, 0.7);
@@ -628,7 +629,7 @@ a {
   }
 
   .lightbox-dialog {
-    width: 100%;
+    width: min(92vw, 312px);
     padding: 0.8rem;
   }
 
