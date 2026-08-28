@@ -36,6 +36,8 @@
     lightboxTrigger: null,
     speakingButton: null,
     activeUtterance: null,
+    audioButton: null,
+    activeAudio: null,
     language: getInitialLanguage(),
     entryObserver: null,
   };
@@ -177,16 +179,22 @@
     var button = document.createElement("button");
     var copy = getCopy();
     var text = getEntryText(entry, "description") || copy.descriptionComingSoon;
+    var audioUrl = state.language === "bn" ? getBengaliAudio(entry) : "";
 
     controls.className = "entry-audio-controls";
     button.type = "button";
     button.className = "entry-audio-button";
     button.dataset.speechText = text;
-    button.dataset.speechLanguage = state.language === "bn" ? "bn-BD" : "en-CA";
+    button.dataset.speechLanguage = "en-CA";
     button.textContent = copy.listen;
     button.setAttribute("aria-label", copy.readDescription);
 
-    if (!speechSynthesisApi) {
+    if (audioUrl) {
+      button.dataset.audioSrc = audioUrl;
+    } else if (state.language === "bn") {
+      button.disabled = true;
+      button.textContent = copy.audioPending;
+    } else if (!speechSynthesisApi) {
       button.disabled = true;
       button.textContent = copy.audioUnavailable;
     }
@@ -280,11 +288,11 @@
 
   function getInitialLanguage() {
     try {
-      return window.localStorage.getItem("photo-album-language") === "bn"
-        ? "bn"
-        : "en";
+      return window.localStorage.getItem("photo-album-language") === "en"
+        ? "en"
+        : "bn";
     } catch (error) {
-      return "en";
+      return "bn";
     }
   }
 
@@ -330,6 +338,15 @@
     }
 
     return entry[field] || "";
+  }
+
+  function getBengaliAudio(entry) {
+    var translations = data.bengali && data.bengali.entries;
+    var translatedEntry = translations && translations[entry.date];
+
+    return translatedEntry && typeof translatedEntry.audio === "string"
+      ? translatedEntry.audio.trim()
+      : "";
   }
 
   function getPhotoAlt(photo) {
@@ -400,10 +417,6 @@
   }
 
   function bindSpeech() {
-    if (!speechSynthesisApi) {
-      return;
-    }
-
     document.addEventListener("click", function (event) {
       var button = event.target.closest(".entry-audio-button");
 
@@ -411,7 +424,11 @@
         return;
       }
 
-      toggleSpeech(button);
+      if (button.dataset.audioSrc) {
+        toggleAudio(button);
+      } else {
+        toggleSpeech(button);
+      }
     });
 
     window.addEventListener("beforeunload", stopSpeech);
@@ -621,16 +638,45 @@
     speechSynthesisApi.speak(utterance);
   }
 
-  function stopSpeech() {
-    if (!speechSynthesisApi) {
+  function toggleAudio(button) {
+    if (state.audioButton === button) {
+      stopAudio();
       return;
     }
 
-    if (speechSynthesisApi.speaking || speechSynthesisApi.pending) {
+    stopSpeech();
+
+    var audio = new Audio(button.dataset.audioSrc);
+
+    state.audioButton = button;
+    state.activeAudio = audio;
+    button.classList.add("is-speaking");
+    button.textContent = getCopy().stop;
+    button.setAttribute("aria-label", getCopy().stopReading);
+    audio.addEventListener("ended", resetAudioState);
+    audio.addEventListener("error", resetAudioState);
+    audio.play().catch(resetAudioState);
+  }
+
+  function stopSpeech() {
+    if (
+      speechSynthesisApi &&
+      (speechSynthesisApi.speaking || speechSynthesisApi.pending)
+    ) {
       speechSynthesisApi.cancel();
     }
 
     resetSpeechState();
+    stopAudio();
+  }
+
+  function stopAudio() {
+    if (state.activeAudio) {
+      state.activeAudio.pause();
+      state.activeAudio.currentTime = 0;
+    }
+
+    resetAudioState();
   }
 
   function resetSpeechState() {
@@ -649,6 +695,19 @@
     state.activeUtterance = null;
   }
 
+  function resetAudioState() {
+    if (!state.audioButton) {
+      state.activeAudio = null;
+      return;
+    }
+
+    state.audioButton.classList.remove("is-speaking");
+    state.audioButton.textContent = getCopy().listen;
+    state.audioButton.setAttribute("aria-label", getCopy().readDescription);
+    state.audioButton = null;
+    state.activeAudio = null;
+  }
+
   function resolveSpeechVoice() {
     if (!speechSynthesisApi) {
       return null;
@@ -662,10 +721,8 @@
       var score = 0;
       var voiceName = voice.name.toLowerCase();
       var voiceLang = voice.lang.toLowerCase();
-      var langPreferences = state.language === "bn"
-        ? ["bn-BD", "bn-IN", "bn"]
-        : ["en-CA", "en-US", "en-GB", "en-AU", "en"];
-      var preferredNames = state.language === "bn" ? [] : [
+      var langPreferences = ["en-CA", "en-US", "en-GB", "en-AU", "en"];
+      var preferredNames = [
         "samantha",
         "ava",
         "allison",
