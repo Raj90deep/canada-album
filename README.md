@@ -22,6 +22,33 @@ It opens locally in a browser without npm, a build step, or a backend, and it is
 
 Use public Cloudinary URLs only; visitors need access to every image shown in the album.
 
+## Bengali Audio
+
+Add the Bengali MP3 URL directly inside the matching entry in `bengali.entries`:
+
+```js
+"2026-06-09": {
+  title: "টরন্টোয় আগমন",
+  description: "...",
+  audio: "https://res.cloudinary.com/YOUR_CLOUD_NAME/video/upload/2026-06-09-bn.mp3",
+},
+```
+
+The Bengali `Listen` button plays the supplied MP3. English narration continues to use the device's browser text-to-speech voice.
+
+## Add Gallery Videos
+
+Add YouTube Shorts links to the shared `gallery` list in [/Users/rajdeepchowdhuri/Desktop/Temp/R&D/Photo Album/data.js](/Users/rajdeepchowdhuri/Desktop/Temp/R&D/Photo Album/data.js). They appear at the bottom of the album in both languages:
+
+```js
+gallery: [
+  "https://www.youtube.com/shorts/VIDEO_ID",
+  "https://youtu.be/VIDEO_ID",
+],
+```
+
+Set `amazonPhotosUrl` to an Amazon Photos share link or an Amazon Photos app link to show an `Amazon Photos` button above the video grid.
+
 ## Add a New Journal Entry
 
 1. Open [/Users/rajdeepchowdhuri/Desktop/Temp/R&D/Photo Album/data.js](/Users/rajdeepchowdhuri/Desktop/Temp/R&D/Photo Album/data.js).
