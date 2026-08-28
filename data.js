@@ -2,6 +2,24 @@ window.ALBUM_DATA = {
   albumTitle: "Our Summer Together",
   dateRange: "June 9 – August 9, 2026",
   subtitle: "Toronto, Niagara, Montreal, Quebec City and everything in between",
+  // Paste YouTube Shorts links here. This gallery is shared by both languages.
+  // Paste an Amazon Photos share or app link here when available.
+  amazonPhotosUrl:
+    "https://www.amazon.com/photos/groups/share/SCS7EDQCQuaFCU6B3FdTcg.cEXwnRklFKFT7ivvlSzXoX",
+  gallery: [
+    "https://youtu.be/NxQpEKcSQjc?si=fw9w0hSGmIe9zFHf",
+    "https://youtu.be/zZN5KA_6vOo?si=5ScM_Vyaw_dev_3b",
+    "https://youtu.be/sQi8nHTu9lo?si=it0CQTADMXEkFjsT",
+    "https://youtu.be/pRhVoO9RYD4?si=DkMycA6qsVHqhqBQ",
+    "https://youtu.be/h5dEDLEpGEc?si=deL-HQnHJun07Aql",
+    "https://youtu.be/zrKNkUvcteo?si=l6gLvfc_dTAw6Cim",
+    "https://youtu.be/3eFAgC1f89g?si=8pT0rEpNMTqX44vQ",
+    "https://youtu.be/0ZSYHSAZE1k?si=E1rPimp-5EMMvLQu",
+    "https://youtu.be/5NQ2x0D1Ep8?si=bK-Otso8Cpb_V509",
+    "https://youtu.be/uYjv-7mazGI?si=JuUj6iN3yalji6y2",
+    "https://youtu.be/yzCk-SkbmSo?si=Zr41CpsdfgSuJWoC",
+    "https://youtu.be/-Idqim32Sfo?si=bd59e1toR5V3yeky",
+  ],
   bengali: {
     albumTitle: "আমাদের একসাথে গ্রীষ্ম",
     dateRange: "৯ জুন – ৯ আগস্ট, ২০২৬",
@@ -21,6 +39,8 @@ window.ALBUM_DATA = {
     audioUnavailable: "অডিও সুবিধা নেই",
     audioPending: "অডিও শীঘ্রই আসছে",
     photo: "ছবি",
+    gallery: "গ্যালারি",
+    galleryEmpty: "গ্যালারির ভিডিও শীঘ্রই আসছে।",
     months: { "06": "জুন", "07": "জুল", "08": "আগ" },
     entries: {
       // Add an `audio` URL inside each entry, beside `title` and `description`.
@@ -344,6 +364,11 @@ window.ALBUM_DATA = {
           "কলকাতায় ফেরার জন্য আবারও উপহার কিনতে গেলাম। তারপর মিসিসাগার কোয়ালিটি বুফে রেস্তোরাঁয় গেলাম, সেখানে সুস্বাদু বুফে খাবার খেলাম। কেনাকাটা আর খাওয়াদাওয়ার মধ্যে দিনটা খুব মজায় কাটল।",
         audio:
           "https://res.cloudinary.com/jrlaeufd/video/upload/v1787925332/KwalityBuffet.mp3",
+      },
+      "2026-08-29": {
+        title: "বিদায় কানাডা!",
+        description:
+          "কানাডাকে বিদায় জানানোর সময় হল। আমরা বিমানবন্দরে গেলাম, আর আমি কলকাতায় ফেরার বিমানে উঠলাম। আনন্দ, সুস্বাদু খাবার আর ঘোরাঘুরিতে ভরা এই সফরটি ছিল স্মরণীয়। এই ভ্রমণের স্মৃতিগুলো আমি সারাজীবন মনে রাখব।",
       },
     },
   },
@@ -901,6 +926,12 @@ window.ALBUM_DATA = {
       description:
         "We again went to buy gifts for my Kolkata return. Then we went to Kwality Buffet restaurant at Mississauga where we had a delicious buffet meal. It was a fun day spent shopping and eating.",
       photos: [],
+    },
+    {
+      date: "2026-08-29",
+      title: "Bye bye Canada!",
+      description:
+        "Time to say goodbye to Canada. We went to the airport and I boarded my flight back to Kolkata. It was a memorable trip filled with fun, food, and sightseeing. I will cherish the memories of this trip forever.",
     },
   ],
 };
